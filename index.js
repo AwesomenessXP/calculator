@@ -1,6 +1,7 @@
 //---------------------------------- GLOBAL VARIABLES ---------------------------------------
 const calculator = document.getElementById('numpad');
 const btnPress = calculator.getElementsByClassName('row');
+let screen = document.getElementById('screen-text');
 const COLSIZE = 4;
 const ROWSIZE = 5;
 
@@ -10,13 +11,41 @@ window.addEventListener('load', () => {
     createBtns();
 });
 
+// ----------------------------------OBJECTS ------------------------------------------------
+
+let outputResult = {
+    firstNum: null,
+    secondNum: null,
+    doOperation: null
+}
+
 // if any button is pressed, store it in an object/array, then output to screen
 calculator.addEventListener('click', (e) => {
     // we want to make that we are not outputting the column IDs, ONLY the keys!!
-    if (e.target.id !== "column-0" && e.target.id !== "column-1"
-            && e.target.id !== "column-2" && e.target.id !== "column-3" && e.target.id !== "numpad" 
-                    && e.target.id !== "ignore"){
-        document.getElementById('screen-text').textContent = e.target.id; // change the text in this div
+    if (e.target.id !== "column-0" && e.target.id !== "column-1" && e.target.id !== "column-2"
+             && e.target.id !== "column-3" && e.target.id !== "numpad" && e.target.id !== "ignore"){             
+        //document.getElementById('screen-text').textContent = e.target.id; // change the text in this div
+        
+        // check if the btn is a number
+        if (e.target.id >= "0" && e.target.id <= "9"){
+            screen.textContent = e.target.id; // TODO: CHANGE THIS LATER TO UPDATE IT APPROPRIATELY
+            (outputResult.firstNum === null) ? outputResult.firstNum = parseFloat(e.target.id): outputResult.secondNum = parseFloat(e.target.id);
+        }// if
+
+        // check if btn is operation
+        if (e.target.id === "+" || e.target.id === "-" || e.target.id === "*" || e.target.id === "/") {
+            outputResult.doOperation = e.target.id;
+        }
+
+        // after pressing equals sign, do operation
+        if (e.target.id === "=" && outputResult.doOperation !== null && outputResult.firstNum !== null
+                && outputResult.secondNum !== null) {
+            console.log(outputResult.doOperation);
+            operate();
+            outputResult.firstNum = null;
+            outputResult.secondNum = null;
+            outputResult.doOperation = null;
+        }// if
     }// if
 });
 
@@ -85,12 +114,14 @@ function createBtns () {
     const SECROW = document.getElementById('column-1');
     SECROW.querySelector('.row-0').textContent = 'CE';
     SECROW.querySelector('.row-0').setAttribute('id', 'CE');
+    SECROW.querySelector('.row-0').style.backgroundColor = '#92B4EC';
     SECROW.querySelector('.row-0').style.flex = "3 3 auto";
 
-    // add CE button in second row
+    // EMPTY ROW, DONT DISPLAY ON NUMPAD
     const THIRDROW = document.getElementById('column-2');
-    THIRDROW.querySelector('.row-0').textContent = 'na';
+    THIRDROW.querySelector('.row-0').textContent = '\s'; // create empty space 
     THIRDROW.querySelector('.row-0').style.opacity = "0";
+    THIRDROW.querySelector('.row-0').style.cursor = "default";
     THIRDROW.querySelector('.row-0').setAttribute('id', 'ignore');
     THIRDROW.querySelector('.row-0').style.flex = "3 3 auto";
 }// createBtns()
@@ -103,6 +134,15 @@ function identifyBtn (row, iterator) { // takes class of row# and the numbers to
     });
 }// identifyBtn()
 
-function operate() {
+// basic operator functions 
+let add = () => outputResult.firstNum + outputResult.secondNum;
+let sub = () => outputResult.firstNum - outputResult.secondNum;
+let mult = () => outputResult.firstNum * outputResult.secondNum;
+let div = () => outputResult.firstNum / outputResult.secondNum;
 
-}
+function operate() { // takes row key id and the two numbers needed for operation
+    (outputResult.doOperation === '+') ? screen.textContent = add(): null;
+    (outputResult.doOperation === '-') ? screen.textContent = sub(): null;
+    (outputResult.doOperation === '*') ? screen.textContent = mult(): null;
+    (outputResult.doOperation === '/') ? screen.textContent = div(): null;
+}// operate
