@@ -1,10 +1,19 @@
 //---------------------------------- GLOBAL VARIABLES ---------------------------------------
-const CALCULATOR = document.getElementById('numpad');
+const calculator = document.getElementById('numpad');
+const btnPress = calculator.getElementsByClassName('row');
 
 //---------------------------------- EVENTS --------------------------------------------------
 // run ALL of these functions on start up
 window.addEventListener('load', () => {
     createBtns();
+});
+
+calculator.addEventListener('click', (e) => {
+    // we want to make that we are not outputting the column IDs, ONLY the keys!!
+    if (e.target.id !== "column-0" && e.target.id !== "column-1"
+            && e.target.id !== "column-2" && e.target.id !== "column-3"){
+        document.getElementById('screen-text').textContent = e.target.id;
+    }// if
 });
 
 // ----------------------------------- FUNCTIONS -------------------------------------------
@@ -15,34 +24,29 @@ function createBtns () {
         // tag each column with these classes
         column.classList.add("column");
         column.setAttribute('id', `column-${i}`);
-        CALCULATOR.appendChild(column);
+        calculator.appendChild(column);
         for (let i = 0; i < 5; i++) {
             let row = document.createElement('div');
             // tag each row with these classes
             row.classList.add("row");
             row.classList.add(`row-${i}`);
             column.appendChild(row);
-        }
+        }// for
     }// for
 
-    // variables for rows 2 - 5
-    const SECONDROW = document.querySelectorAll('.row-1');
-    const THIRDROW = document.querySelectorAll('.row-2');
-    const FOURTHROW = document.querySelectorAll('.row-3');
-    const FIFTHROW = document.querySelectorAll('.row-4');
-
     // create an id for each individual key so we can access them later
-    identifyBtn(SECONDROW, 7);
-    identifyBtn(THIRDROW, 4);
-    identifyBtn(FOURTHROW, 1);
+    identifyBtn(document.querySelectorAll('.row-1'), 7);
+    identifyBtn(document.querySelectorAll('.row-2'), 4);
+    identifyBtn(document.querySelectorAll('.row-3'), 1);
 
     // fifth row
+    const FIFTHROW = document.querySelectorAll('.row-4');
     let i = 0;
     FIFTHROW.forEach(btn => {
         (i === 0) ? btn.textContent = i : null;
         (i === 1) ? btn.textContent = '.': null;
-        (i === 2) ? btn.textContent = '=' : null;
-        btn.setAttribute('id', `key-${btn.textContent}`);
+        (i === 2) ? btn.textContent = '(-)' : null;
+        btn.setAttribute('id', btn.textContent);
         i++;
     });
 
@@ -53,13 +57,24 @@ function createBtns () {
     FOURTHCOLUMN.querySelector('.row-2').textContent = '-';
     FOURTHCOLUMN.querySelector('.row-3').textContent = '+';
     FOURTHCOLUMN.querySelector('.row-4').textContent = 'enter';
-    FOURTHCOLUMN.querySelector('.row-4').style.backgroundColor = '#1363DF';
-}
 
-function identifyBtn (row, iterator) {
+    // give ids to operation keys
+    FOURTHCOLUMN.querySelector('.row-0').setAttribute('id', '/');
+    FOURTHCOLUMN.querySelector('.row-1').setAttribute('id', '*');
+    FOURTHCOLUMN.querySelector('.row-2').setAttribute('id', '-');
+    FOURTHCOLUMN.querySelector('.row-3').setAttribute('id', '+');
+    FOURTHCOLUMN.querySelector('.row-4').setAttribute('id', 'enter');
+    FOURTHCOLUMN.querySelector('.row-4').style.backgroundColor = '#1363DF';
+}// createBtns()
+
+function identifyBtn (row, iterator) { // takes class of row# and the numbers to be added as args
     row.forEach(btn => {
-        btn.textContent = iterator;
-        btn.setAttribute('id', `key-${iterator}`);
+        btn.textContent = iterator; // show the key on the numpad
+        btn.setAttribute('id', iterator); // set id for the key
         iterator++;
     });
-}// identifyBtn
+}// identifyBtn()
+
+function operate() {
+
+}

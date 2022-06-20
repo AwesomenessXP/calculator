@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    background-color: #BDF2D5;
+    background-image: linear-gradient(to left, rgb(0, 255, 170), rgb(7, 218, 255) );
 }
 
 header {
@@ -33,7 +33,7 @@ header {
     display: flex;
     width: 480px;
     height: 200px;
-    background-color: #FFDAAF;
+    background-color: #f9f9f9e8;
     border-radius: 8px;
     margin-top: 20px;
     justify-content: left;
@@ -86,6 +86,7 @@ p {
 
 .row:hover {
     cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.301);
     transform: scale(1.05);
     transition: transform 0.15s ease-in;
 }
