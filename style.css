@@ -29,14 +29,14 @@ header {
 }
 
 #screen {
-    position: absolute;
+    position: relative;
     display: flex;
     width: 480px;
     height: 200px;
     background-color: #f9f9f9e8;
     border-radius: 8px;
     margin-top: 20px;
-    justify-content: left;
+    margin-left: -495px;
     text-align: right;
 }
 
@@ -53,14 +53,14 @@ p {
 }
 
 #numpad {
-    position: absolute;
+    position: relative;
     width: 490px;
     height: 450px;
     top: 230px;
     display: flex;
     flex-direction: row;
-    margin-left: 10px;
     margin-right: 10px;
+    margin-left: -485px;
 }
 
 .column {
