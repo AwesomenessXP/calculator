@@ -6,12 +6,6 @@ const COLSIZE = 4;
 const ROWSIZE = 5;
 let isSecondNum = false; // set true AFTER operator is used!!
 
-//---------------------------------- EVENTS --------------------------------------------------
-// run ALL of these functions on start up
-window.addEventListener('load', () => {
-    createBtns();
-});
-
 // ----------------------------------OBJECTS/ ARRAYS ------------------------------------------------
 
 let calcTwoNums = { // update this each time a pair of numbers needs to be calculated
@@ -20,52 +14,48 @@ let calcTwoNums = { // update this each time a pair of numbers needs to be calcu
     doOperation: null
 }
 
-let num2 = []; 
+let nextNum = []; // concatenate digits for the nextNum to be calculated
 
 // --------------------------------- EVENTS -----------------------------------------------------------------
 
-// if any button is pressed, store it in an object/array, then output to screen
+window.addEventListener('load', () => { // on start up, create the buttons
+    createBtns();
+});
+
 calculator.addEventListener('click', (e) => {
     // we want to make that we are not outputting the column IDs, ONLY the keys!!
     if (e.target.id !== "column-0" && e.target.id !== "column-1" && e.target.id !== "column-2"
-             && e.target.id !== "column-3" && e.target.id !== "numpad" && e.target.id !== "ignore"){
+             && e.target.id !== "column-3" && e.target.id !== "numpad" && e.target.id 
+                    !== "ignore"){
         
-        // check if the btn is a number
-        if (e.target.id >= "0" && e.target.id <= "9"){
-            numKeyPress(e.target.id);
-        }// if
+        (e.target.id >= "0" && e.target.id <= "9") ? numKeyPress(e.target.id) : null;// check if the btn is a number
+        (e.target.id === "AC") ? clear() : null;// check if btn is AC (all clear)
 
         // check if btn is operation
-        if (e.target.id === "+" || e.target.id === "-" || e.target.id === "*" || e.target.id === "/" 
-                && calcTwoNums.firstNum !== null) {
+        if (e.target.id === "+" || e.target.id === "-" || e.target.id === "*" || e.target.id 
+                === "/" && calcTwoNums.firstNum !== null) {
             operatorPress(e.target.id);
         }// if
 
         // after pressing equals sign, do operation
-        if (e.target.id === "=" && calcTwoNums.doOperation !== null 
-                && calcTwoNums.firstNum !== null
-                && calcTwoNums.secondNum !== null) {
+        if (e.target.id === "=" && calcTwoNums.doOperation !== null && calcTwoNums.firstNum 
+                !== null && calcTwoNums.secondNum !== null) {
             equalsPress("=");
         }// if
 
-        // check if btn is AC (all clear)
-        (e.target.id === "AC") ? clear() : null;
-
-        if (e.target.id === "(-)") {
-            screen.textContent = 0 - screen.textContent;
-        }
+        if (e.target.id === "(-)" && calcTwoNums.firstNum !== null) {
+            negate("(-)");
+        }// if
     }// if
 });
 
 // ----------------------------------- FUNCTIONS -------------------------------------------
 
 // basic operator functions 
-let add = () => {
-    return parseInt(calcTwoNums.firstNum) + parseInt(calcTwoNums.secondNum)
-};
-let sub = () => calcTwoNums.firstNum - calcTwoNums.secondNum;
-let mult = () => calcTwoNums.firstNum * calcTwoNums.secondNum;
-let div = () => calcTwoNums.firstNum / calcTwoNums.secondNum;
+let add = () => parseFloat(calcTwoNums.firstNum) + parseFloat(calcTwoNums.secondNum);
+let sub = () => parseFloat(calcTwoNums.firstNum) - parseFloat(calcTwoNums.secondNum);
+let mult = () => parseFloat(calcTwoNums.firstNum) * parseFloat(calcTwoNums.secondNum);
+let div = () => parseFloat(calcTwoNums.firstNum) / parseFloat(calcTwoNums.secondNum);
 
 // do this function after user presses equals sign
 function operate() { // takes object of operations needed
@@ -79,17 +69,16 @@ function operate() { // takes object of operations needed
 
 // when a number key is pressed
 function numKeyPress(num) {
-    screen.textContent = screen.textContent + num;
-
+    screen.textContent = screen.textContent + num; // show the number on the screen
     if (calcTwoNums.firstNum === null || !isSecondNum) {
         isSecondNum = false;
         calcTwoNums.firstNum = screen.textContent; // pass the joined value of the array here
     }// if
     else {
         isSecondNum = true;
-        num2.push(num);
-        screen.textContent = num2.join('');
-        calcTwoNums.secondNum = num2.join(''); // pass the joined value of the array here
+        nextNum.push(num);
+        screen.textContent = nextNum.join('');
+        calcTwoNums.secondNum = nextNum.join(''); // pass the joined value of the array here
     }// else
 }// numKeyPress()
 
@@ -109,7 +98,7 @@ function equalsPress() {
         calcTwoNums.secondNum = null;
         calcTwoNums.doOperation = null;
         isSecondNum = false; // set this to false, we want to start a new calculation
-        num2 = []; // empty the array
+        nextNum = []; // empty the array
     }// if
 }// equalsPress()
 
@@ -121,9 +110,14 @@ function clear() {
         secondNum: null,
         doOperation: null
     }
-    num2 = [];
+    nextNum = [];
     isSecondNum = false;
-}
+}// clear()
+
+function negate() {
+    screen.textContent = 0 - screen.textContent;
+    calcTwoNums.secondNum = screen.textContent;
+}// negate()
 
 function createBtns () {
     // create a row of columns to make the grid
@@ -132,7 +126,6 @@ function createBtns () {
         // give each column the class and individual id
         column.classList.add("column");
         column.setAttribute('id', `column-${i}`);
-
         calculator.appendChild(column); // append new column to numpad
 
         for (let i = 0; i < ROWSIZE; i++) {
@@ -140,7 +133,6 @@ function createBtns () {
             // give each row the class and individual id
             row.classList.add("row");
             row.classList.add(`row-${i}`);
-
             column.appendChild(row); // append new row to column
         }// for
     }// for
