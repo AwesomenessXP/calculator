@@ -20,7 +20,7 @@ let calcTwoNums = { // update this each time a pair of numbers needs to be calcu
     doOperation: null
 }
 
-let num2 = [];
+let num2 = []; 
 
 // --------------------------------- EVENTS -----------------------------------------------------------------
 
@@ -36,25 +36,24 @@ calculator.addEventListener('click', (e) => {
         }// if
 
         // check if btn is operation
-        if (e.target.id === "+" || e.target.id === "-" || e.target.id === "*" || e.target.id === "/") {
+        if (e.target.id === "+" || e.target.id === "-" || e.target.id === "*" || e.target.id === "/" 
+                && calcTwoNums.firstNum !== null) {
             operatorPress(e.target.id);
         }// if
 
         // after pressing equals sign, do operation
-        if (e.target.id === "=" && calcTwoNums.doOperation !== null && calcTwoNums.firstNum !== null
+        if (e.target.id === "=" && calcTwoNums.doOperation !== null 
+                && calcTwoNums.firstNum !== null
                 && calcTwoNums.secondNum !== null) {
-            if (isSecondNum){
-                let answer = operate();
-
-                // empty our result object
-                calcTwoNums.firstNum = answer;
-                console.log(calcTwoNums.firstNum);
-                calcTwoNums.secondNum = null;
-                calcTwoNums.doOperation = null;
-                isSecondNum = false; // set this to false, we want to start a new calculation
-                num2 = [];
-            }// if
+            equalsPress("=");
         }// if
+
+        // check if btn is AC (all clear)
+        (e.target.id === "AC") ? clear() : null;
+
+        if (e.target.id === "(-)") {
+            screen.textContent = 0 - screen.textContent;
+        }
     }// if
 });
 
@@ -76,8 +75,9 @@ function operate() { // takes object of operations needed
     (calcTwoNums.doOperation === '*') ? screen.textContent = mult(): null;
     (calcTwoNums.doOperation === '/') ? screen.textContent = div().toFixed(2): null;
     return screen.textContent;
-}// operate
+}// operate()
 
+// when a number key is pressed
 function numKeyPress(num) {
     screen.textContent = screen.textContent + num;
 
@@ -91,11 +91,38 @@ function numKeyPress(num) {
         screen.textContent = num2.join('');
         calcTwoNums.secondNum = num2.join(''); // pass the joined value of the array here
     }// else
-}// numKeyPress
+}// numKeyPress()
 
+// when an operator key is pressed
 function operatorPress(op) {
-    !isSecondNum ? calcTwoNums.doOperation = op : null;
-    isSecondNum = !isSecondNum;
+    calcTwoNums.doOperation = op;
+    isSecondNum = true;
+}// operatorPress()
+
+// when equal sign is pressed
+function equalsPress() {
+    if (isSecondNum){
+        let answer = operate();
+        // empty our result object
+        calcTwoNums.firstNum = answer;
+        console.log(calcTwoNums.firstNum);
+        calcTwoNums.secondNum = null;
+        calcTwoNums.doOperation = null;
+        isSecondNum = false; // set this to false, we want to start a new calculation
+        num2 = []; // empty the array
+    }// if
+}// equalsPress()
+
+// when AC is pressed, RESET EVERYTHING
+function clear() {
+    screen.textContent = null;
+    calcTwoNums = {
+        firstNum: null, 
+        secondNum: null,
+        doOperation: null
+    }
+    num2 = [];
+    isSecondNum = false;
 }
 
 function createBtns () {
